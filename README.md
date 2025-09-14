@@ -2,6 +2,8 @@
 
 A comprehensive data science portfolio showcasing two production-ready projects with real business impact. This portfolio demonstrates advanced data science skills through interactive web applications built with Streamlit.
 
+- 📊 **Portfolio app online**: https://portfolio-michael-chaya-moghrabi-data-science.streamlit.app/
+
 ## 🚀 Quick Start
 
 ### Run Locally
@@ -195,4 +197,3 @@ Give a ⭐️ if this project helped you!
 
 **Built with ❤️ by Michaël Chaya-Moghrabi**
 
-# Force deployment update Sun Sep 14 00:58:45 CEST 2025

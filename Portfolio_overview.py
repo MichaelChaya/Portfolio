@@ -129,7 +129,7 @@ def main():
         <h3>🏠 Berlin AirBnB Price Predictor & Market Analyzer</h3>
         <p><strong>Business Challenge:</strong> Help hosts optimize pricing and identify profitable neighborhoods</p>
         <p><strong>Solution:</strong> ML-powered price prediction with interactive market analysis</p>
-        <p><strong>Impact:</strong> Average 18% revenue increase for hosts, processes 15K+ listings</p>
+        <p><strong>Impact:</strong> Average ~18% revenue increase for hosts, processes 15K+ listings</p>
         <p><strong>Tech Stack:</strong> Python, Scikit-learn, Streamlit, Folium, Pandas</p>
     </div>
     """, unsafe_allow_html=True)

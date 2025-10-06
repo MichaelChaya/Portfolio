@@ -129,7 +129,7 @@ def main():
         <h3>🏠 Berlin AirBnB Price Predictor & Market Analyzer</h3>
         <p><strong>Business Challenge:</strong> Help hosts optimize pricing and identify profitable neighborhoods</p>
         <p><strong>Solution:</strong> ML-powered price prediction with interactive market analysis</p>
-        <p><strong>Impact:</strong> Average 18% revenue increase for hosts, processes 15K+ listings</p>
+        <p><strong>Impact:</strong> Demonstrates ~18% revenue optimization potential using representative market data</p>
         <p><strong>Tech Stack:</strong> Python, Scikit-learn, Streamlit, Folium, Pandas</p>
     </div>
     """, unsafe_allow_html=True)
@@ -140,7 +140,7 @@ def main():
         <h3>💼 Automated Job Market Intelligence Tool</h3>
         <p><strong>Business Challenge:</strong> Navigate competitive job market with data-driven insights</p>
         <p><strong>Solution:</strong> Automated job scraping and skill demand analysis</p>
-        <p><strong>Impact:</strong> Analyzes 10K+ jobs monthly, helps negotiate 15-20% higher salaries</p>
+        <p><strong>Impact:</strong> Demonstrates 15-20% salary optimization potential using representative market data</p>
         <p><strong>Tech Stack:</strong> Python, Selenium, Plotly, Streamlit</p>
     </div>
     """, unsafe_allow_html=True)
@@ -159,47 +159,55 @@ def main():
     with col1:
         st.markdown("""
         **🏠 AirBnB Price Predictor**
-        
+
         **Primary Data Sources:**
-        - **InsideAirbnb.com**: Public AirBnB listing data for Berlin
-        - **OpenStreetMap**: Geographic and neighborhood data
-        - **Census Data**: Population demographics and economic indicators
-        - **Real Estate APIs**: Property values and market trends
-        
+        - **InsideAirbnb.com**: Real public AirBnB listing data for Berlin (No API key required)
+          - Updated quarterly with real listing data
+          - Multiple fallback dates for reliability
+          - Direct CSV access from data.insideairbnb.com
+
         **Data Features:**
-        - Property characteristics (size, rooms, amenities)
-        - Location data (coordinates, neighborhood, distance to attractions)
-        - Market indicators (seasonality, demand patterns)
-        - Host information (experience, response rates)
-        
-        **Update Frequency:** Real-time via API calls with fallback to cached data
+        - Property characteristics (room type, minimum nights, availability)
+        - Location data (latitude, longitude, neighborhood districts)
+        - Market indicators (pricing, reviews, availability patterns)
+        - Host information (review counts, listing metrics)
+
+        **Update Frequency:** Quarterly updates from InsideAirbnb, with automatic fallback to previous datasets
         """)
     
     with col2:
         st.markdown("""
         **💼 Job Market Intelligence**
-        
+
         **Primary Data Sources:**
-        - **LinkedIn Jobs API**: Job postings and skill requirements
-        - **Indeed API**: Salary data and market trends
-        - **StepStone & Xing**: German job market insights
-        - **Glassdoor**: Company reviews and salary benchmarks
-        
+        - **Adzuna API**: Real job market data from Germany (Integrated!)
+          - Live job postings with skill requirements
+          - Real salary data from actual listings
+          - Job counts by city and role type
+        - **GitHub API**: Supplementary skill popularity metrics (No API key required)
+          - Repository activity as demand indicators
+          - Active development for growth trends
+        - **Eurostat & Destatis**: Official German labor statistics
+          - Salary benchmarks by city and experience level
+          - Cost of living indices from federal sources
+
         **Data Features:**
-        - Job postings (titles, descriptions, requirements)
-        - Salary ranges by location and experience
-        - Skill demand trends and growth rates
-        - Company information and market presence
-        
-        **Update Frequency:** Daily refresh with representative market data patterns
+        - Skill demand extracted from 100+ real job descriptions
+        - Real salary data aggregated from actual job listings
+        - Live job counts for major German cities
+        - Experience-level breakdowns with official statistics
+
+        **Update Frequency:** Real-time data from Adzuna API with robust fallback mechanisms
         """)
     
     st.markdown("""
     ### Data Quality & Validation
-    - **Automated validation** ensures data integrity and consistency
-    - **Fallback mechanisms** provide reliable performance when external APIs are unavailable
-    - **Representative data patterns** based on extensive market research
-    - **Real-time error handling** maintains application stability
+    - **Real API integration** with InsideAirbnb.com, Adzuna API, and GitHub API
+    - **Live job market data** from Adzuna for German data science positions
+    - **Official statistics** from Eurostat and German Federal Statistics Office
+    - **Automated fallback** to previous datasets when APIs are unavailable
+    - **Validation checks** ensure data completeness and accuracy
+    - **Error handling** maintains stability across all environments
     """)
     
     # Technical Skills Overview

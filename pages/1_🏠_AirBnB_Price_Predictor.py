@@ -67,26 +67,25 @@ st.markdown("### Optimize pricing and identify profitable neighborhoods using ma
 # Data Sources Information
 with st.expander("📊 Data Sources & Methodology", expanded=False):
     st.markdown("""
-    **Primary Data Sources:**
-    - **InsideAirbnb.com**: Public AirBnB listing data for Berlin
-    - **OpenStreetMap**: Geographic and neighborhood data  
-    - **Census Data**: Population demographics and economic indicators
-    - **Real Estate APIs**: Property values and market trends
-    
-    **Data Features:**
-    - Property characteristics (size, rooms, amenities)
-    - Location data (coordinates, neighborhood, distance to attractions)
-    - Market indicators (seasonality, demand patterns)
-    - Host information (experience, response rates)
-    
-    **Update Frequency:** Real-time via API calls with fallback to cached data
-    
-    **Data Quality:** Automated validation ensures data integrity and consistency
-    """)
+    **Data Sources:**
+    - **InsideAirbnb.com**: Real public AirBnB listing data for Berlin (No API key required)
+      - Direct access to quarterly updated CSV files
+      - Fallback to multiple historical datasets for reliability
+      - Source: http://data.insideairbnb.com/germany/be/berlin/
 
-# Hide sidebar controls as they are redundant
-# st.sidebar.header("Prediction Controls")
-# st.sidebar.markdown("Adjust the parameters below to get price predictions for your listing:")
+    **Data Features:**
+    - Property characteristics (room types, minimum nights, availability)
+    - Location data (latitude, longitude coordinates)
+    - Market indicators (pricing, review counts, availability_365)
+    - Neighborhood clustering into 8 major Berlin districts
+
+    **Data Processing:**
+    - Real-time validation of data completeness
+    - Neighborhood aggregation for better model performance
+    - Automatic fallback to most recent available dataset
+
+    **Note:** This application prioritizes real data from InsideAirbnb.com. Sample data is only used if all API sources are unavailable.
+    """)
 
 def clean_price_column(price_series):
     """Clean price columns by removing currency symbols and converting to numeric"""
@@ -251,65 +250,77 @@ def cluster_neighborhoods(df):
 
 def load_airbnb_data():
     """Load AirBnB data from Inside AirBnB or create realistic fallback"""
-    try:
-        # Try to load from Inside AirBnB API or CSV
-        url = "http://data.insideairbnb.com/germany/be/berlin/2024-06-22/visualisations/listings.csv"
-        
-        # Check if we can access the data
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            df = pd.read_csv(url)
-            # Validate that we have the required columns
-            required_columns = ['latitude', 'longitude', 'room_type', 'price', 'neighbourhood', 'minimum_nights', 'number_of_reviews', 'availability_365']
-            missing_columns = [col for col in required_columns if col not in df.columns]
-            if missing_columns:
-                st.warning(f"Missing required columns: {missing_columns}. Using available data.")
-            
-            # Cluster neighborhoods into larger districts
-            df = cluster_neighborhoods(df)
-            
-            return df
-        else:
-            raise Exception("Data source not accessible")
-            
-    except Exception as e:
-        st.warning(f"""
+    # Try multiple data sources with fallback dates
+    data_urls = [
+        "http://data.insideairbnb.com/germany/be/berlin/2024-09-16/visualisations/listings.csv",
+        "http://data.insideairbnb.com/germany/be/berlin/2024-06-22/visualisations/listings.csv",
+        "http://data.insideairbnb.com/germany/be/berlin/2024-03-20/visualisations/listings.csv",
+        "http://data.insideairbnb.com/germany/be/berlin/2023-12-18/visualisations/listings.csv"
+    ]
+
+    for url in data_urls:
+        try:
+            # Check if we can access the data
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                df = pd.read_csv(url)
+                # Validate that we have the required columns
+                required_columns = ['latitude', 'longitude', 'room_type', 'price', 'neighbourhood', 'minimum_nights', 'number_of_reviews', 'availability_365']
+                missing_columns = [col for col in required_columns if col not in df.columns]
+                if missing_columns:
+                    continue  # Try next URL if missing columns
+
+                # Cluster neighborhoods into larger districts
+                df = cluster_neighborhoods(df)
+
+                # Extract date from URL for display
+                import re
+                date_match = re.search(r'/(\d{4}-\d{2}-\d{2})/', url)
+                data_date = date_match.group(1) if date_match else "recent"
+                st.success(f"✅ Loaded real AirBnB data from InsideAirbnb.com (Data from: {data_date})")
+
+                return df
+
+        except Exception:
+            continue  # Try next URL
+
+    # If all URLs fail, show warning and use fallback
+    st.warning(f"""
         **Using Sample Data**
-        
-        Could not load live AirBnB data from Inside AirBnB: {str(e)}
-        
+
+        Could not load live AirBnB data from InsideAirbnb.com.
+
         The project will use representative sample data to demonstrate functionality.
         In a production environment, this would connect to real data sources.
         """)
-        
-        # Create realistic sample data with clustered districts
-        np.random.seed(42)
-        n_samples = 1000
-        
-        # Berlin coordinates bounds
-        lat_min, lat_max = 52.3, 52.7
-        lon_min, lon_max = 13.0, 13.8
-        
-        # Define balanced district clusters (not too many, not too few)
-        districts = ['Mitte', 'Prenzlauer Berg', 'Kreuzberg & Friedrichshain', 'Charlottenburg', 'Neukölln', 'Schöneberg', 'Steglitz-Zehlendorf', 'Pankow']
-        
-        sample_data = {
-            'latitude': np.random.uniform(lat_min, lat_max, n_samples),
-            'longitude': np.random.uniform(lon_min, lon_max, n_samples),
-            'room_type': np.random.choice(['Entire home/apt', 'Private room', 'Shared room'], n_samples),
-            'neighbourhood': np.random.choice(districts, n_samples),
-            'minimum_nights': np.random.choice([1, 2, 3, 7, 14, 30], n_samples),
-            'number_of_reviews': np.random.poisson(20, n_samples),
-            'availability_365': np.random.randint(0, 365, n_samples),
-            'price': np.random.lognormal(4.2, 0.8, n_samples)  # Log-normal distribution for realistic prices
-        }
-        
-        df = pd.DataFrame(sample_data)
-        # Round prices to realistic values
-        df['price'] = np.round(df['price'], 2)
-        
-        
-        return df
+
+    # Create realistic sample data with clustered districts
+    np.random.seed(42)
+    n_samples = 1000
+
+    # Berlin coordinates bounds
+    lat_min, lat_max = 52.3, 52.7
+    lon_min, lon_max = 13.0, 13.8
+
+    # Define balanced district clusters (not too many, not too few)
+    districts = ['Mitte', 'Prenzlauer Berg', 'Kreuzberg & Friedrichshain', 'Charlottenburg', 'Neukölln', 'Schöneberg', 'Steglitz-Zehlendorf', 'Pankow']
+
+    sample_data = {
+        'latitude': np.random.uniform(lat_min, lat_max, n_samples),
+        'longitude': np.random.uniform(lon_min, lon_max, n_samples),
+        'room_type': np.random.choice(['Entire home/apt', 'Private room', 'Shared room'], n_samples),
+        'neighbourhood': np.random.choice(districts, n_samples),
+        'minimum_nights': np.random.choice([1, 2, 3, 7, 14, 30], n_samples),
+        'number_of_reviews': np.random.poisson(20, n_samples),
+        'availability_365': np.random.randint(0, 365, n_samples),
+        'price': np.random.lognormal(4.2, 0.8, n_samples)  # Log-normal distribution for realistic prices
+    }
+
+    df = pd.DataFrame(sample_data)
+    # Round prices to realistic values
+    df['price'] = np.round(df['price'], 2)
+
+    return df
 
 def create_price_prediction_model(df):
     """Create and train price prediction model"""

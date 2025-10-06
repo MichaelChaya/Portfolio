@@ -2,6 +2,8 @@
 
 A comprehensive data science portfolio showcasing two production-ready projects with real business impact. This portfolio demonstrates advanced data science skills through interactive web applications built with Streamlit.
 
+- 📊 **Portfolio app online**: https://portfolio-michael-chaya-moghrabi-data-science.streamlit.app/
+
 ## 🚀 Quick Start
 
 ### Run Locally
@@ -39,14 +41,15 @@ Then open your browser to `http://localhost:8501`
   - Personalized job matching
   - Market reports and trends
   - Dynamic data refresh functionality
-- **Tech Stack**: Python, Selenium, Plotly, Streamlit, Pandas
-- **Data**: Job postings, salary data, market trends
+- **Tech Stack**: Python, Adzuna API, GitHub API, Plotly, Streamlit, Pandas
+- **Data**: Real job postings via Adzuna API, salary data, market trends
 
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
 - Python 3.8+ (tested with Python 3.10)
 - pip package manager
+- (Optional) Adzuna API credentials for live job market data
 
 ### Detailed Setup
 
@@ -67,12 +70,31 @@ Then open your browser to `http://localhost:8501`
    pip install -r requirements.txt
    ```
 
-4. **Run the portfolio**
+4. **Configure API Keys (Optional but Recommended)**
+
+   For live job market data from Adzuna API:
+
+   a. Get free API credentials from [Adzuna Developer Portal](https://developer.adzuna.com/)
+
+   b. Create a `.env` file in the project root:
+   ```bash
+   cp .env.example .env
+   ```
+
+   c. Edit `.env` and add your credentials:
+   ```
+   ADZUNA_APP_ID=your_app_id_here
+   ADZUNA_API_KEY=your_api_key_here
+   ```
+
+   **Note**: The application works without API keys using curated fallback data.
+
+5. **Run the portfolio**
    ```bash
    streamlit run Portfolio_overview.py
    ```
 
-5. **Access the application**
+6. **Access the application**
    - Open your browser to `http://localhost:8501`
    - Navigate through projects using the sidebar
 
@@ -114,27 +136,31 @@ DataSciencePortfolio/
 ## 📊 Data Sources & Methodology
 
 ### AirBnB Project
-- **Primary Data**: InsideAirbnb.com public dataset for Berlin
-- **Geographic Data**: OpenStreetMap for neighborhood boundaries
-- **Market Data**: Real estate trends and economic indicators
-- **Fallback**: Representative sample data for demonstration purposes
-- **Update Frequency**: Data refreshed on each application run
+- **Primary Data**: InsideAirbnb.com public dataset for Berlin (No API key required)
+  - Real AirBnB listing data updated quarterly
+  - Multiple fallback dates for reliability
+- **Geographic Data**: Latitude/longitude coordinates and neighborhood clustering
+- **Market Data**: Price trends and availability patterns
+- **Update Frequency**: Automatic fallback to most recent available dataset
 
 ### Job Market Project
-- **Primary Data**: Web scraping from job boards (LinkedIn, Indeed, etc.)
-- **Salary Data**: Market research and salary benchmarking
-- **Skills Data**: Technology trend analysis and demand metrics
-- **Fallback**: Representative sample data for demonstration purposes
-- **Update Frequency**: Dynamic refresh functionality available
+- **Primary Data**: Adzuna API for real German job market data (API key required)
+  - 100+ real job postings analyzed per session
+  - Live salary data from actual listings
+  - Real-time job counts by city
+- **Supplementary Data**: GitHub API for skill popularity metrics (No API key required)
+- **Official Statistics**: Eurostat & Destatis for salary benchmarks and cost of living
+- **Fallback**: Curated market research data when APIs unavailable
+- **Update Frequency**: Real-time with dynamic refresh functionality
 
 ## 🎯 Technical Skills Demonstrated
 
 - **Machine Learning**: Regression models, feature engineering, model evaluation
-- **Data Engineering**: Web scraping, API integration, data validation
+- **Data Engineering**: RESTful API integration, data validation, ETL pipelines
 - **Visualization**: Interactive dashboards, geographic mapping, statistical charts
 - **Web Development**: Streamlit applications, responsive design, user interaction
 - **Data Quality**: Error handling, data validation, fallback mechanisms
-- **Software Engineering**: Modular code, documentation, version control
+- **Software Engineering**: Modular code, documentation, version control, secure credential management
 
 ## 📈 Project Statistics
 
@@ -168,9 +194,18 @@ docker run -p 8501:8501 data-science-portfolio
 ```
 
 ### Streamlit Cloud Deployment
-1. Push your code to GitHub
+1. Push your code to GitHub (`.env` is automatically excluded via `.gitignore`)
 2. Connect your GitHub repository to Streamlit Cloud
-3. Deploy with one click - no additional configuration needed
+3. **Configure Secrets** in Streamlit Cloud dashboard:
+   - Go to App Settings → Secrets
+   - Add your API credentials:
+     ```toml
+     ADZUNA_APP_ID = "your_app_id_here"
+     ADZUNA_API_KEY = "your_api_key_here"
+     ```
+4. Deploy - Streamlit will automatically use the secrets as environment variables
+
+**Note**: The app works without API keys using fallback data, but real-time job market data requires Adzuna API credentials.
 
 ## 📝 License
 
@@ -195,4 +230,3 @@ Give a ⭐️ if this project helped you!
 
 **Built with ❤️ by Michaël Chaya-Moghrabi**
 
-# Force deployment update Sun Sep 14 00:58:45 CEST 2025

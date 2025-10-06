@@ -106,7 +106,7 @@ except (AttributeError, FileNotFoundError):
 
 ADZUNA_BASE_URL = "https://api.adzuna.com/v1/api/jobs"
 
-def fetch_adzuna_jobs(search_term="data scientist", location="Germany", max_results=50):
+def fetch_adzuna_jobs(search_term="data scientist", location="", max_results=50):
     """Fetch real job listings from Adzuna API"""
     if not ADZUNA_APP_ID or not ADZUNA_API_KEY:
         return None, "Adzuna API credentials not found"
@@ -123,9 +123,12 @@ def fetch_adzuna_jobs(search_term="data scientist", location="Germany", max_resu
                 'app_key': ADZUNA_API_KEY,
                 'results_per_page': results_per_page,
                 'what': search_term,
-                'where': location,
                 'content-type': 'application/json'
             }
+
+            # Only add 'where' parameter if location is specified and not empty
+            if location:
+                params['where'] = location
 
             response = requests.get(url, params=params, timeout=10)
 
@@ -227,8 +230,8 @@ def analyze_skills_demand():
         'Statistics', 'Deep Learning', 'Azure', 'GCP', 'Pandas', 'NumPy'
     ]
 
-    # Try to fetch real job data from Adzuna
-    jobs_df, message = fetch_adzuna_jobs(search_term="data scientist", location="Germany", max_results=100)
+    # Try to fetch real job data from Adzuna (empty location = all of Germany)
+    jobs_df, message = fetch_adzuna_jobs(search_term="data scientist", location="", max_results=100)
 
     if jobs_df is not None and not jobs_df.empty:
         # Extract skill mentions from real job postings

@@ -4,12 +4,15 @@ from datetime import datetime, timedelta
 import requests
 import os
 import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 def clean_price_column(price_series):
     """Clean price columns by removing currency symbols and converting to numeric"""
     try:
         return pd.to_numeric(price_series.str.replace('$', '').str.replace('€', '').str.replace(',', ''), errors='coerce')
-    except:
+    except Exception:
         return price_series
 
 def calculate_percentage_change(current, previous):
@@ -23,12 +26,12 @@ def validate_coordinates(lat, lon):
     try:
         lat_f = float(lat)
         lon_f = float(lon)
-        
+
         if -90 <= lat_f <= 90 and -180 <= lon_f <= 180:
             return lat_f, lon_f
         else:
             return None, None
-    except:
+    except Exception:
         return None, None
 
 def fetch_with_retry(url, max_retries=3, timeout=10):
@@ -56,7 +59,7 @@ def safe_divide(numerator, denominator):
         if denominator == 0 or pd.isna(denominator):
             return 0
         return numerator / denominator
-    except:
+    except Exception:
         return 0
 
 def format_currency(amount, currency='EUR'):
@@ -68,7 +71,7 @@ def format_currency(amount, currency='EUR'):
             return f"${amount:,.0f}"
         else:
             return f"{amount:,.0f} {currency}"
-    except:
+    except Exception:
         return str(amount)
 
 def extract_numeric_from_string(text):
@@ -79,14 +82,14 @@ def extract_numeric_from_string(text):
         if numbers:
             return float(numbers[0])
         return 0
-    except:
+    except Exception:
         return 0
 
 def create_date_range(start_date, end_date, freq='D'):
     """Create pandas date range"""
     try:
         return pd.date_range(start=start_date, end=end_date, freq=freq)
-    except:
+    except Exception:
         return pd.date_range(start=datetime.now() - timedelta(days=30), end=datetime.now(), freq=freq)
 
 def handle_missing_data(df, strategy='drop'):
@@ -110,7 +113,7 @@ def normalize_text(text):
         text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
         text = ' '.join(text.split())  # Remove extra whitespace
         return text
-    except:
+    except Exception:
         return str(text)
 
 def calculate_correlation_matrix(df, method='pearson'):
@@ -118,7 +121,7 @@ def calculate_correlation_matrix(df, method='pearson'):
     try:
         numeric_df = df.select_dtypes(include=[np.number])
         return numeric_df.corr(method=method)
-    except:
+    except Exception:
         return pd.DataFrame()
 
 def get_api_key(key_name, default=None):
@@ -144,5 +147,5 @@ def aggregate_by_time_period(df, date_column, value_column, period='M'):
         df_grouped = df.groupby(pd.Grouper(key=date_column, freq=period))[value_column].agg(['mean', 'sum', 'count'])
         return df_grouped
     except Exception as e:
-        print(f"Error in time aggregation: {e}")
+        logger.error(f"Error in time aggregation: {e}")
         return pd.DataFrame()

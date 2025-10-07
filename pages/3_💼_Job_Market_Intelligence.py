@@ -79,13 +79,13 @@ with st.expander("📊 Data Sources & Methodology", expanded=False):
       - Cost of living indices from federal statistics
 
     **Data Features:**
-    - **Skill demand**: Extracted from 100+ real job descriptions via Adzuna
+    - **Skill demand**: Extracted from up to 1000+ real job descriptions via Adzuna
     - **Salary ranges**: Real data from Adzuna + official statistics
     - **Job counts**: Live data from Adzuna API for 7 major German cities
     - **Cost of living**: Official indices from German federal statistics
 
     **Data Processing:**
-    1. Fetch real job postings from Adzuna API
+    1. Fetch real job postings from Adzuna API (100-1000 jobs)
     2. Extract skill mentions from job descriptions
     3. Calculate demand as % of jobs requiring each skill
     4. Aggregate salary data from actual listings
@@ -220,7 +220,7 @@ def get_adzuna_salary_data(cities, job_title="data scientist"):
 
     return pd.DataFrame(salary_data) if salary_data else None
 
-def analyze_skills_demand():
+def analyze_skills_demand(max_jobs=500):
     """Analyze skill demand trends using real Adzuna job data"""
 
     skill_keywords = [
@@ -231,7 +231,7 @@ def analyze_skills_demand():
     ]
 
     # Try to fetch real job data from Adzuna (empty location = all of Germany)
-    jobs_df, message = fetch_adzuna_jobs(search_term="data scientist", location="", max_results=100)
+    jobs_df, message = fetch_adzuna_jobs(search_term="data scientist", location="", max_results=max_jobs)
 
     if jobs_df is not None and not jobs_df.empty:
         # Extract skill mentions from real job postings
@@ -508,16 +508,28 @@ def main():
     
     # Real-time Market Analysis
     st.markdown("## 🔍 Real-time Market Analysis")
-    
+
+    # Add control for number of jobs to analyze
+    col_control1, col_control2 = st.columns([3, 1])
+    with col_control1:
+        st.markdown("")  # Empty space
+    with col_control2:
+        max_jobs = st.selectbox(
+            "Jobs to analyze:",
+            options=[100, 250, 500, 1000],
+            index=2,  # Default to 500
+            help="More jobs = more accurate analysis but slower loading. ~1000 jobs available total."
+        )
+
     # Use the stored refresh time
     refresh_time_ago = get_time_ago(st.session_state.last_refresh_timestamp)
-    
+
     # Always load the data for analysis
-    with st.spinner("Loading job market data..."):
+    with st.spinner(f"Loading {max_jobs} job postings from Adzuna API..."):
         # Skills demand analysis
-        skills_df = analyze_skills_demand()
+        skills_df = analyze_skills_demand(max_jobs=max_jobs)
         salary_df = analyze_salary_trends()
-        
+
     st.success("Market analysis ready!")
     
     # Display last updated time

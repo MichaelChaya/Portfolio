@@ -8,7 +8,10 @@ from sklearn.metrics import mean_squared_error, r2_score, accuracy_score, classi
 from sklearn.impute import SimpleImputer
 import joblib
 import warnings
+import logging
+
 warnings.filterwarnings('ignore')
+logger = logging.getLogger(__name__)
 
 class PricePredictionModel:
     """Price prediction model for AirBnB listings"""
@@ -65,7 +68,7 @@ class PricePredictionModel:
             return df_processed[final_features]
             
         except Exception as e:
-            print(f"Error in feature preparation: {e}")
+            logger.error(f"Error in feature preparation: {e}")
             return pd.DataFrame()
     
     def train(self, df, target_column='price'):
@@ -145,7 +148,7 @@ class PricePredictionModel:
             return importance_df
             
         except Exception as e:
-            print(f"Error getting feature importance: {e}")
+            logger.error(f"Error getting feature importance: {e}")
             return pd.DataFrame()
 
 class SentimentAnalysisModel:
@@ -242,7 +245,7 @@ class JobMatchingModel:
             return basic_score
             
         except Exception as e:
-            print(f"Error calculating match score: {e}")
+            logger.error(f"Error calculating match score: {e}")
             return 0
     
     def set_skill_weights(self, weights_dict):
@@ -306,7 +309,7 @@ class JobMatchingModel:
             return recommendations[:10]  # Top 10 recommendations
             
         except Exception as e:
-            print(f"Error generating skill recommendations: {e}")
+            logger.error(f"Error generating skill recommendations: {e}")
             return []
 
 def create_price_prediction_pipeline():
@@ -345,5 +348,5 @@ def evaluate_model_performance(y_true, y_pred, model_type='regression'):
             }
             
     except Exception as e:
-        print(f"Error evaluating model: {e}")
+        logger.error(f"Error evaluating model: {e}")
         return {}

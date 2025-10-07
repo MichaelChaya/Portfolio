@@ -5,6 +5,9 @@ import pandas as pd
 import numpy as np
 import folium
 from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 def create_price_distribution_chart(df, price_column='price', title="Price Distribution"):
     """Create price distribution histogram"""
@@ -37,7 +40,7 @@ def create_price_distribution_chart(df, price_column='price', title="Price Distr
         return fig
         
     except Exception as e:
-        print(f"Error creating price distribution chart: {e}")
+        logger.error(f"Error creating price distribution chart: {e}")
         return go.Figure()
 
 def create_correlation_heatmap(df, title="Correlation Heatmap"):
@@ -62,7 +65,7 @@ def create_correlation_heatmap(df, title="Correlation Heatmap"):
         return fig
         
     except Exception as e:
-        print(f"Error creating correlation heatmap: {e}")
+        logger.error(f"Error creating correlation heatmap: {e}")
         return go.Figure()
 
 def create_time_series_chart(df, date_column, value_column, title="Time Series"):
@@ -88,7 +91,7 @@ def create_time_series_chart(df, date_column, value_column, title="Time Series")
         return fig
         
     except Exception as e:
-        print(f"Error creating time series chart: {e}")
+        logger.error(f"Error creating time series chart: {e}")
         return go.Figure()
 
 def create_scatter_plot(df, x_column, y_column, color_column=None, size_column=None, title="Scatter Plot"):
@@ -112,7 +115,7 @@ def create_scatter_plot(df, x_column, y_column, color_column=None, size_column=N
         return fig
         
     except Exception as e:
-        print(f"Error creating scatter plot: {e}")
+        logger.error(f"Error creating scatter plot: {e}")
         return go.Figure()
 
 def create_bar_chart(df, x_column, y_column, color_column=None, title="Bar Chart"):
@@ -135,7 +138,7 @@ def create_bar_chart(df, x_column, y_column, color_column=None, title="Bar Chart
         return fig
         
     except Exception as e:
-        print(f"Error creating bar chart: {e}")
+        logger.error(f"Error creating bar chart: {e}")
         return go.Figure()
 
 def create_geographic_map(df, lat_column='latitude', lon_column='longitude', 
@@ -197,7 +200,7 @@ def create_geographic_map(df, lat_column='latitude', lon_column='longitude',
         return m
         
     except Exception as e:
-        print(f"Error creating geographic map: {e}")
+        logger.error(f"Error creating geographic map: {e}")
         return None
 
 def create_sentiment_gauge(sentiment_score, title="Sentiment Score"):
@@ -235,7 +238,7 @@ def create_sentiment_gauge(sentiment_score, title="Sentiment Score"):
         return fig
         
     except Exception as e:
-        print(f"Error creating sentiment gauge: {e}")
+        logger.error(f"Error creating sentiment gauge: {e}")
         return go.Figure()
 
 def create_feature_importance_chart(importance_df, title="Feature Importance"):
@@ -260,7 +263,7 @@ def create_feature_importance_chart(importance_df, title="Feature Importance"):
         return fig
         
     except Exception as e:
-        print(f"Error creating feature importance chart: {e}")
+        logger.error(f"Error creating feature importance chart: {e}")
         return go.Figure()
 
 def create_skill_demand_chart(skills_df, x_col='Demand_2024', y_col='Growth_Rate', 
@@ -287,7 +290,7 @@ def create_skill_demand_chart(skills_df, x_col='Demand_2024', y_col='Growth_Rate
         return fig
         
     except Exception as e:
-        print(f"Error creating skill demand chart: {e}")
+        logger.error(f"Error creating skill demand chart: {e}")
         return go.Figure()
 
 def create_multi_line_chart(df, x_column, y_columns, title="Multi-line Chart"):
@@ -314,7 +317,7 @@ def create_multi_line_chart(df, x_column, y_columns, title="Multi-line Chart"):
         return fig
         
     except Exception as e:
-        print(f"Error creating multi-line chart: {e}")
+        logger.error(f"Error creating multi-line chart: {e}")
         return go.Figure()
 
 def create_comparison_chart(df, categories, values, title="Comparison Chart"):
@@ -337,7 +340,7 @@ def create_comparison_chart(df, categories, values, title="Comparison Chart"):
         return fig
         
     except Exception as e:
-        print(f"Error creating comparison chart: {e}")
+        logger.error(f"Error creating comparison chart: {e}")
         return go.Figure()
 
 def create_donut_chart(df, names_column, values_column, title="Distribution"):
@@ -356,7 +359,7 @@ def create_donut_chart(df, names_column, values_column, title="Distribution"):
         return fig
         
     except Exception as e:
-        print(f"Error creating donut chart: {e}")
+        logger.error(f"Error creating donut chart: {e}")
         return go.Figure()
 
 def create_dashboard_layout(charts_list, rows=2, cols=2):
@@ -384,7 +387,7 @@ def create_dashboard_layout(charts_list, rows=2, cols=2):
         return fig
         
     except Exception as e:
-        print(f"Error creating dashboard layout: {e}")
+        logger.error(f"Error creating dashboard layout: {e}")
         return go.Figure()
 
 def apply_custom_theme(fig, theme='plotly_white'):
@@ -400,5 +403,5 @@ def apply_custom_theme(fig, theme='plotly_white'):
         return fig
         
     except Exception as e:
-        print(f"Error applying custom theme: {e}")
+        logger.error(f"Error applying custom theme: {e}")
         return fig
